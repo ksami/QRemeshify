@@ -11,6 +11,7 @@ bl_info = {
 
 import bpy
 from .operator import QUADWILD_OT_REMESH
+from .props import MyPropertyGroup
 
 
 class QUADWILD_PT_UIPanel(bpy.types.Panel):
@@ -20,22 +21,37 @@ class QUADWILD_PT_UIPanel(bpy.types.Panel):
     bl_region_type = 'UI'
     bl_category = "Remesh"
 
-    def draw(self, context):
+    def draw(self, ctx: bpy.types.Context):
         layout = self.layout
 
         col = layout.column()
         col.operator(QUADWILD_OT_REMESH.bl_idname)
-        col.progress(factor= 0.7, type = 'BAR', text = "Updating")
-        col.progress(factor= 0.7, type = 'RING', text = "Updating...")
+
+        progress_factor = ctx.scene.quadwild_props.progress_factor
+        if progress_factor < 0.01:
+            progress_text = ""
+        else:
+            if progress_factor > 0.999:
+                progress_text = "Done"
+            else:
+                progress_text = "Running..."
+            col.progress(type='BAR', factor=progress_factor, text=progress_text)
+
 
 
 def register():
+    bpy.utils.register_class(MyPropertyGroup)
     bpy.utils.register_class(QUADWILD_PT_UIPanel)
     bpy.utils.register_class(QUADWILD_OT_REMESH)
+
+    bpy.types.Scene.quadwild_props = bpy.props.PointerProperty(type=MyPropertyGroup)
 
 def unregister():
     bpy.utils.unregister_class(QUADWILD_OT_REMESH)
     bpy.utils.unregister_class(QUADWILD_PT_UIPanel)
+
+    bpy.utils.unregister_class(MyPropertyGroup)
+    del bpy.types.Scene.quadwild_props
 
 
 if __name__ == "__main__":
