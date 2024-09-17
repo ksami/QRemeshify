@@ -16,6 +16,10 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
             self.report({'INFO'}, "Selection isn't a mesh object")
             return {'CANCELLED'}
 
+        if len(obj.data.polygons) == 0:
+            self.report({'ERROR'}, "Mesh has 0 faces")
+            return {'CANCELLED'}
+
         ctx.scene.quadwild_props.progress_factor = 0.0
 
         obj = ctx.active_object
@@ -41,6 +45,7 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
 
         # Convert to quads
         qw.quadrangulate()
+        qw = None
         ctx.scene.quadwild_props.progress_factor = 1.0
 
         # Import remeshed OBJ
