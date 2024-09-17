@@ -1,0 +1,6 @@
+.venv
+.vscode
+blender_vscode_development
+__pycache__
+*.pyc
+example
