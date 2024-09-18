@@ -2,9 +2,14 @@ import os
 from ctypes import *
 from .data import Parameters, QRParameters, create_string, create_default_QRParameters
 
+class QWException(Exception):
+    pass
 
 class Quadwild():
     def __init__(self, mesh_path: str) -> None:
+        if mesh_path is None or len(mesh_path) == 0:
+            raise QWException("mesh_path is empty")
+
         # quadpatches_lib_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib_quadpatches.dll')
         # quadwild_lib_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib_quadwild.dll')
         quadpatches_lib_path = 'D:\programming\quadwild-bimdf\\build\Build\\bin\Release\lib_quadpatches.dll'
@@ -36,11 +41,17 @@ class Quadwild():
         mesh_filename_c = create_string(self.mesh_path)
         sharp_filename_c = create_string(self.sharp_path)
         field_filename_c = create_string(self.field_path)
-        self.quadwild.remeshAndField2(byref(params), mesh_filename_c, sharp_filename_c, field_filename_c)
+        try:
+            self.quadwild.remeshAndField2(byref(params), mesh_filename_c, sharp_filename_c, field_filename_c)
+        except Exception as e:
+            raise QWException("remeshAndField failed") from e
 
     def trace(self) -> bool:
         filename_prefix_c = create_string(self.remeshed_path)
-        ret = self.quadwild.trace2(filename_prefix_c)
+        try:
+            ret = self.quadwild.trace2(filename_prefix_c)
+        except Exception as e:
+            raise QWException("trace failed") from e
         print(ret)
         return ret
 
@@ -49,7 +60,10 @@ class Quadwild():
         mesh_path_c = self.traced_path.encode()
         scaleFact = 1.0
         fixedChartClusters = 0
-        ret = self.quadpatches.quadPatches(mesh_path_c, byref(params), scaleFact, fixedChartClusters)
+        try:
+            ret = self.quadpatches.quadPatches(mesh_path_c, byref(params), scaleFact, fixedChartClusters)
+        except Exception as e:
+            raise QWException("quadPatches failed") from e
         print(ret)
         return ret
 

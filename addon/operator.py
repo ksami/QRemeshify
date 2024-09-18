@@ -14,9 +14,9 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
     def execute(self, ctx):
         props = ctx.scene.quadwild_props
 
-        obj = ctx.active_object
+        obj = ctx.object
         if obj.type != 'MESH':
-            self.report({'INFO'}, "Selection isn't a mesh object")
+            self.report({'INFO'}, "Object isn't a mesh object")
             return {'CANCELLED'}
 
         if len(obj.data.polygons) == 0:
@@ -44,20 +44,20 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
         qw = Quadwild(mesh_filepath)
         props.progress_factor = 0.2
 
+        # Calculate sharp
+        export_sharp_features(mesh, qw.sharp_path, props.sharpAngle)
+        props.progress_factor = 0.25
+
         # Remesh and calculate field
         qw.remeshAndField(params=Parameters(
             remesh=props.remesh,
             sharpAngle=props.sharpAngle,
             alpha=props.alpha,
             scaleFact=props.scaleFact,
-            hasFeature=False,
+            hasFeature=True,
             hasField=False,
         ))
-        props.progress_factor = 0.5
-
-        # Calculate sharp
-        export_sharp_features(mesh, qw.sharp_path)
-        props.progress_factor = 0.55
+        props.progress_factor = 0.6
 
         # Trace
         qw.trace()
@@ -68,7 +68,7 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
         props.progress_factor = 0.95
 
         # Import remeshed OBJ
-        bpy.ops.wm.obj_import(filepath=qw.output_smoothed_path, check_existing=True)
+        bpy.ops.wm.obj_import(filepath=qw.output_smoothed_path,  check_existing=True)
         newest_obj = ctx.scene.objects[-1]
         newest_obj.name = f"{obj.name} Remeshed"
 
