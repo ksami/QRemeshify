@@ -37,7 +37,7 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
         self.report({'INFO'}, f"Remeshing from {mesh_filepath}")
 
         # Export selected object as OBJ
-        bpy.ops.wm.obj_export(filepath=mesh_filepath, check_existing=False, export_selected_objects=True, export_materials=False)
+        bpy.ops.wm.obj_export(filepath=mesh_filepath, apply_modifiers=True, check_existing=False, export_selected_objects=True, export_materials=False)
         props.progress_factor = 0.1
 
         # Load lib

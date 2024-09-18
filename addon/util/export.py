@@ -25,6 +25,7 @@ def export_sharp_features(mesh: bpy.types.Mesh, sharp_filepath: str):
             f.write(f"{num_sharp_features}\n")
             for edge in sharp_edges:
                 f.write(f"{edge}\n")
+            f.close()
 
     # Flush changes from wrapped bmesh / write back to mesh
     # if mesh_obj.mode == 'EDIT':
