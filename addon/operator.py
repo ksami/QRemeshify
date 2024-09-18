@@ -69,8 +69,8 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
 
         # Import remeshed OBJ
         bpy.ops.wm.obj_import(filepath=qw.output_smoothed_path,  check_existing=True)
-        newest_obj = ctx.scene.objects[-1]
-        newest_obj.name = f"{obj.name} Remeshed"
+        imported_obj = ctx.selected_objects[0]
+        imported_obj.name = f"{obj.name} Remeshed"
 
         # Hide original
         obj.hide_set(True)
