@@ -37,7 +37,15 @@ class Quadwild():
         self.output_smoothed_path = f'{self.mesh_path_without_ext}_rem_p0_0_quadrangulation_smooth.obj'
 
 
-    def remeshAndField(self, params: Parameters) -> None:
+    def remeshAndField(self, remesh: bool, enableSharp: bool, sharpAngle: float) -> None:
+        params = Parameters(
+            remesh=remesh,
+            sharpAngle=sharpAngle if enableSharp else -1,
+            alpha=0.01,
+            scaleFact=1,
+            hasFeature=enableSharp,
+            hasField=False,
+        )
         mesh_filename_c = create_string(self.mesh_path)
         sharp_filename_c = create_string(self.sharp_path)
         field_filename_c = create_string(self.field_path)
@@ -55,11 +63,46 @@ class Quadwild():
         print(ret)
         return ret
 
-    def quadrangulate(self) -> int:
+    def quadrangulate(
+            self,
+            scaleFact,
+            fixedChartClusters,
+            alpha,
+            ilpMethod,
+            timeLimit,
+            gapLimit,
+            minimumGap,
+            isometry,
+            regularityQuadrilaterals,
+            regularityNonQuadrilaterals,
+            regularityNonQuadrilateralsWeight,
+            alignSingularities,
+            alignSingularitiesWeight,
+            repeatLosingConstraintsIterations,
+            repeatLosingConstraintsQuads,
+            repeatLosingConstraintsNonQuads,
+            repeatLosingConstraintsAlign,
+            hardParityConstraint
+    ) -> int:
         params = create_default_QRParameters()
+        params.alpha = alpha
+        params.ilpMethod = 1  # TODO: pending getter on enum to return int
+        params.timeLimit = timeLimit
+        params.gapLimit = gapLimit
+        params.minimumGap = minimumGap
+        params.isometry = isometry
+        params.regularityQuadrilaterals = regularityQuadrilaterals
+        params.regularityNonQuadrilaterals = regularityNonQuadrilaterals
+        params.regularityNonQuadrilateralsWeight = regularityNonQuadrilateralsWeight
+        params.alignSingularities = alignSingularities
+        params.alignSingularitiesWeight = alignSingularitiesWeight
+        params.repeatLosingConstraintsIterations = repeatLosingConstraintsIterations
+        params.repeatLosingConstraintsQuads = repeatLosingConstraintsQuads
+        params.repeatLosingConstraintsNonQuads = repeatLosingConstraintsNonQuads
+        params.repeatLosingConstraintsAlign = repeatLosingConstraintsAlign
+        params.hardParityConstraint = hardParityConstraint
+
         mesh_path_c = self.traced_path.encode()
-        scaleFact = 1.0
-        fixedChartClusters = 0
         try:
             ret = self.quadpatches.quadPatches(mesh_path_c, byref(params), scaleFact, fixedChartClusters)
         except Exception as e:

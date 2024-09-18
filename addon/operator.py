@@ -13,6 +13,7 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
 
     def execute(self, ctx):
         props = ctx.scene.quadwild_props
+        qr_props = ctx.scene.quadpatches_props
 
         obj = ctx.object
         if obj.type != 'MESH':
@@ -44,19 +45,13 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
         qw = Quadwild(mesh_filepath)
         props.progress_factor = 0.2
 
-        # Calculate sharp
-        export_sharp_features(mesh, qw.sharp_path, props.sharpAngle)
-        props.progress_factor = 0.25
+        if props.enableSharp:
+            # Calculate sharp
+            export_sharp_features(mesh, qw.sharp_path, props.sharpAngle)
+            props.progress_factor = 0.25
 
         # Remesh and calculate field
-        qw.remeshAndField(params=Parameters(
-            remesh=props.remesh,
-            sharpAngle=props.sharpAngle,
-            alpha=props.alpha,
-            scaleFact=props.scaleFact,
-            hasFeature=True,
-            hasField=False,
-        ))
+        qw.remeshAndField(remesh=props.enableRemesh, enableSharp=props.enableSharp, sharpAngle=props.sharpAngle)
         props.progress_factor = 0.6
 
         # Trace
@@ -64,7 +59,28 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
         props.progress_factor = 0.8
 
         # Convert to quads
-        qw.quadrangulate()
+        qw.quadrangulate(
+            qr_props.scaleFact,
+            qr_props.fixedChartClusters,
+            qr_props.alpha,
+            qr_props.ilpMethod,  # TODO: getter to return int
+            qr_props.timeLimit,
+            qr_props.gapLimit,
+            qr_props.minimumGap,
+            qr_props.isometry,
+            qr_props.regularityQuadrilaterals,
+            qr_props.regularityNonQuadrilaterals,
+            qr_props.regularityNonQuadrilateralsWeight,
+            qr_props.alignSingularities,
+            qr_props.alignSingularitiesWeight,
+            qr_props.repeatLosingConstraintsIterations,
+            qr_props.repeatLosingConstraintsQuads,
+            qr_props.repeatLosingConstraintsNonQuads,
+            qr_props.repeatLosingConstraintsAlign,
+            qr_props.hardParityConstraint
+
+            # TODO: Flow config and satsuma config
+        )
         props.progress_factor = 0.95
 
         # Import remeshed OBJ

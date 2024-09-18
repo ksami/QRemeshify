@@ -4,10 +4,11 @@ class Parameters(Structure):
     _fields_ = [
         ('remesh', c_bool),
         ('sharpAngle', c_float),
-        ('alpha', c_float),
-        ('scaleFact', c_float),
         ('hasFeature', c_bool),
         ('hasField', c_bool),
+        # Unused
+        ('alpha', c_float),
+        ('scaleFact', c_float),
     ]
 
 
@@ -21,6 +22,7 @@ class QRParameters(Structure):
         ("reproject", c_bool),
         ("splitConcaves", c_bool),
         ("finalSmoothing", c_bool),
+
         ("ilpMethod", c_int),
         ("alpha", c_double),
         ("isometry", c_bool),
@@ -35,19 +37,22 @@ class QRParameters(Structure):
         ("repeatLosingConstraintsAlign", c_bool),
         ("feasibilityFix", c_bool),
         ("hardParityConstraint", c_bool),
+
         ("timeLimit", c_double),
         ("gapLimit", c_double),
         ("minimumGap", c_double),
+        ("callbackTimeLimit", POINTER(c_float)),
+        ("callbackGapLimit", POINTER(c_float)),
+
         ("chartSmoothingIterations", c_int),
         ("quadrangulationFixedSmoothingIterations", c_int),
         ("quadrangulationNonFixedSmoothingIterations", c_int),
         ("doubletRemoval", c_bool),
+
         ("resultSmoothingIterations", c_int),
         ("resultSmoothingNRing", c_double),
         ("resultSmoothingLaplacianIterations", c_int),
         ("resultSmoothingLaplacianNRing", c_double),
-        ("callbackTimeLimit", POINTER(c_float)),
-        ("callbackGapLimit", POINTER(c_float)),
     ]
 
 
@@ -60,6 +65,20 @@ def create_default_QRParameters():
     callbackGapLimitDefault = [8, 0.005, 0.02, 0.05, 0.10, 0.15, 0.20, 0.25, 0.3]
 
     params = QRParameters()
+
+    # TODO: Possibly unused
+    params.initialRemeshing = True
+    params.initialRemeshingEdgeFactor = 1
+    params.reproject = True
+    params.splitConcaves = False
+    params.finalSmoothing = True
+    params.doubletRemoval = True
+    params.resultSmoothingIterations = 5
+    params.resultSmoothingNRing = 3
+    params.resultSmoothingLaplacianIterations = 2
+    params.resultSmoothingLaplacianNRing = 3
+
+    # From configs
     params.alpha = 0.005
     params.ilpMethod = 1
     params.timeLimit = 200
@@ -78,12 +97,11 @@ def create_default_QRParameters():
     params.repeatLosingConstraintsNonQuads = 0
     params.repeatLosingConstraintsAlign = 1
     params.hardParityConstraint = 1
-    params.scaleFact = 1
-    params.fixedChartClusters = 0
     params.useFlowSolver = 1
     params.flow_config_filename = "flow_virtual_simple.json".encode()
     params.satsuma_config_filename = "satsuma_default.json".encode()
 
+    # Hardcoded in lib
     params.chartSmoothingIterations = 0
     params.quadrangulationFixedSmoothingIterations = 0
     params.quadrangulationNonFixedSmoothingIterations = 0
