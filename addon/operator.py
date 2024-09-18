@@ -1,6 +1,7 @@
 import bpy
 import os
 from .lib import Quadwild, Parameters
+from .util.export import export_sharp_features
 
 
 class QUADWILD_OT_REMESH(bpy.types.Operator):
@@ -22,9 +23,15 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
             self.report({'ERROR'}, "Mesh has 0 faces")
             return {'CANCELLED'}
 
+        # Get mesh after modifiers and shapekeys applied
+        depsgraph = bpy.context.evaluated_depsgraph_get()
+        evaluated_obj = obj.evaluated_get(depsgraph)
+        mesh = bpy.data.meshes.new_from_object(evaluated_obj, depsgraph=depsgraph)
+
+        # TODO: discard half if symmetrize
+
         props.progress_factor = 0.0
 
-        obj = ctx.active_object
         mesh_name = os.path.join(bpy.app.tempdir, obj.name)
         mesh_filepath = f"{mesh_name}.obj"
         self.report({'INFO'}, f"Remeshing from {mesh_filepath}")
@@ -48,22 +55,26 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
         ))
         props.progress_factor = 0.5
 
+        # Calculate sharp
+        export_sharp_features(mesh, qw.sharp_path)
+        props.progress_factor = 0.55
+
         # Trace
         qw.trace()
         props.progress_factor = 0.8
 
         # Convert to quads
         qw.quadrangulate()
-        qw = None
-        props.progress_factor = 1.0
+        props.progress_factor = 0.95
 
         # Import remeshed OBJ
-        mesh_filepath = f"{mesh_name}_rem_p0_0_quadrangulation_smooth.obj"
-        bpy.ops.wm.obj_import(filepath=mesh_filepath, check_existing=True)
+        bpy.ops.wm.obj_import(filepath=qw.output_smoothed_path, check_existing=True)
         newest_obj = ctx.scene.objects[-1]
         newest_obj.name = f"{obj.name} Remeshed"
 
         # Hide original
         obj.hide_set(True)
+        del qw
+        props.progress_factor = 1.0
 
         return {'FINISHED'}

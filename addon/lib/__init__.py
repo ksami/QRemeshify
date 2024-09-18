@@ -24,24 +24,30 @@ class Quadwild():
 
         self.mesh_path = mesh_path
         self.mesh_path_without_ext, _ = os.path.splitext(mesh_path)
+        self.sharp_path = f'{self.mesh_path_without_ext}_rem.sharp'
+        self.field_path = f'{self.mesh_path_without_ext}_rem.rosy'
+        self.remeshed_path = f'{self.mesh_path_without_ext}_rem'
+        self.traced_path = f'{self.mesh_path_without_ext}_rem_p0.obj'
+        self.output_path = f'{self.mesh_path_without_ext}_rem_p0_0_quadrangulation.obj'
+        self.output_smoothed_path = f'{self.mesh_path_without_ext}_rem_p0_0_quadrangulation_smooth.obj'
 
 
     def remeshAndField(self, params: Parameters) -> None:
         # params = Parameters(remesh=True, sharpAngle=35, alpha=0.01, scaleFact=1, hasFeature=False, hasField=False)
         mesh_filename_c = create_string(self.mesh_path)
-        sharp_filename_c = create_string(f'{self.mesh_path_without_ext}.sharp')
-        field_filename_c = create_string(f'{self.mesh_path_without_ext}.rosy')
+        sharp_filename_c = create_string(self.sharp_path)
+        field_filename_c = create_string(self.field_path)
         self.quadwild.remeshAndField2(byref(params), mesh_filename_c, sharp_filename_c, field_filename_c)
 
     def trace(self) -> bool:
-        filename_prefix_c = create_string(f'{self.mesh_path_without_ext}_rem')
+        filename_prefix_c = create_string(self.remeshed_path)
         ret = self.quadwild.trace2(filename_prefix_c)
         print(ret)
         return ret
 
     def quadrangulate(self) -> int:
         params = create_default_QRParameters()
-        mesh_path_c = f'{self.mesh_path_without_ext}_rem_p0.obj'.encode()
+        mesh_path_c = self.traced_path.encode()
         scaleFact = 1.0
         fixedChartClusters = 0
         ret = self.quadpatches.quadPatches(mesh_path_c, byref(params), scaleFact, fixedChartClusters)
