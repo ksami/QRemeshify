@@ -33,7 +33,6 @@ class Quadwild():
 
 
     def remeshAndField(self, params: Parameters) -> None:
-        # params = Parameters(remesh=True, sharpAngle=35, alpha=0.01, scaleFact=1, hasFeature=False, hasField=False)
         mesh_filename_c = create_string(self.mesh_path)
         sharp_filename_c = create_string(self.sharp_path)
         field_filename_c = create_string(self.field_path)

@@ -27,12 +27,13 @@ class QUADWILD_PT_UIPanel(bpy.types.Panel):
 
         col = layout.column()
         col.prop(props, "remesh")
-        col.prop(props, "sharpAngle")  # TODO: replace using edges marked sharp/seam
+        col.prop(props, "sharpAngle")
 
         # Doesn't seem to have effect
         # col.prop(props, "alpha")
         # col.prop(props, "scaleFact")
 
+        # TODO: split into 3 operators for advanced mode to tweak indiv steps
         col.operator(QUADWILD_OT_REMESH.bl_idname)
 
         progress_factor = props.progress_factor
