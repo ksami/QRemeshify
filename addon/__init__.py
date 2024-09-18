@@ -22,12 +22,20 @@ class QUADWILD_PT_UIPanel(bpy.types.Panel):
     bl_category = "Remesh"
 
     def draw(self, ctx: bpy.types.Context):
+        props = ctx.scene.quadwild_props
         layout = self.layout
 
         col = layout.column()
+        col.prop(props, "remesh")
+        col.prop(props, "sharpAngle")  # TODO: replace using edges marked sharp/seam
+
+        # Doesn't seem to have effect
+        # col.prop(props, "alpha")
+        # col.prop(props, "scaleFact")
+
         col.operator(QUADWILD_OT_REMESH.bl_idname)
 
-        progress_factor = ctx.scene.quadwild_props.progress_factor
+        progress_factor = props.progress_factor
         if progress_factor < 0.01:
             progress_text = ""
         else:
