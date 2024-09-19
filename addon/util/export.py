@@ -1,15 +1,10 @@
 import bmesh
-import bpy
 import math
 
 
-def export_sharp_features(mesh: bpy.types.Mesh, sharp_filepath: str, sharp_angle: float=35):
-    # Create a bmesh from mesh
-    # (won't affect mesh, unless explicitly written back)
-    bm = bmesh.new()
-    bm.from_mesh(mesh)
+def export_sharp_features(bm: bmesh.types.BMesh, sharp_filepath: str, sharp_angle: float=35):
+    """Export edges marked sharp, boundary, and seams as sharp features as OBJ format"""
 
-    # Export edges marked sharp, boundary, and seams as sharp features
     sharp_edges = []
     bm.edges.ensure_lookup_table()
     for edge in bm.edges:
@@ -32,12 +27,34 @@ def export_sharp_features(mesh: bpy.types.Mesh, sharp_filepath: str, sharp_angle
             f.write(f"{edge}\n")
         f.close()
 
-    # Flush changes from wrapped bmesh / write back to mesh
-    # if mesh_obj.mode == 'EDIT':
-    #     bmesh.update_edit_mesh(mesh)
-    # else:
-    #     bm.to_mesh(mesh)
-    #     mesh.update()
 
-    bm.free()
-    del bm
+def export_mesh(bm: bmesh.types.BMesh, mesh_filepath: str):
+    """Export mesh as OBJ format"""
+
+    verts = []
+    vert_normals = []
+    faces = []
+
+    for v in bm.verts:
+        verts.append(f"v {v.co.x:.6f} {v.co.y:.6f} {v.co.z:.6f}")
+
+    for fid, f in enumerate(bm.faces):
+        # TODO: Blender will export per face normals if flat-shaded, per face per loop normals if smooth-shaded
+        vert_normals.append(f"vn {f.normal.x:.4f} {f.normal.y:.4f} {f.normal.z:.4f}")
+
+        face_verts = []
+        for v in f.verts:
+            # NOTE: OBJ indices start at 1
+            face_verts.append(f"{v.index + 1}//{fid + 1}")
+
+        faces.append(f"f {' '.join(face_verts)}")
+
+
+    with open(mesh_filepath, 'w') as f:
+        f.write("# OBJ file\n")
+        f.write('\n'.join(verts))
+        f.write('\n')
+        f.write('\n'.join(vert_normals))
+        f.write('\n')
+        f.write('\n'.join(faces))
+        f.close()
