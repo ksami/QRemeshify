@@ -1,5 +1,6 @@
 import bmesh
 import bpy
+import mathutils
 import os
 from .lib import Quadwild, Parameters
 from .util import bisect, exporter, importer
@@ -44,6 +45,13 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
         # (won't affect mesh, unless explicitly written back)
         bm = bmesh.new()
         bm.from_mesh(mesh)
+
+        # Apply only rotation and scale
+        if evaluated_obj.rotation_mode == 'QUATERNION':
+            matrix = mathutils.Matrix.LocRotScale(None, evaluated_obj.rotation_quaternion, evaluated_obj.scale)
+        else:
+            matrix = mathutils.Matrix.LocRotScale(None, evaluated_obj.rotation_euler, evaluated_obj.scale)
+        bmesh.ops.transform(bm, matrix=matrix, verts=bm.verts)
 
         # Bisect to prep for symmetry
         if props.symmetryX or props.symmetryY or props.symmetryZ:
