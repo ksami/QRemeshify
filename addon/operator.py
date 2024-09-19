@@ -2,7 +2,7 @@ import bmesh
 import bpy
 import os
 from .lib import Quadwild, Parameters
-from .util import export, bisect
+from .util import bisect, exporter, importer
 
 
 class QUADWILD_OT_REMESH(bpy.types.Operator):
@@ -54,7 +54,7 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
         self.report({'DEBUG'}, f"Remeshing from {mesh_filepath}")
 
         # Export selected object as OBJ
-        export.export_mesh(bm, mesh_filepath)
+        exporter.export_mesh(bm, mesh_filepath)
         # bpy.ops.wm.obj_export(filepath=mesh_filepath, apply_modifiers=True, check_existing=False, export_selected_objects=True, export_materials=False, export_uv=False)
 
         # Load lib
@@ -62,17 +62,21 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
 
         if props.enableSharp:
             # Calculate sharp
-            export.export_sharp_features(bm, qw.sharp_path, props.sharpAngle)
+            exporter.export_sharp_features(bm, qw.sharp_path, props.sharpAngle)
 
         # Remesh and calculate field
         qw.remeshAndField(remesh=props.enableRemesh, enableSharp=props.enableSharp, sharpAngle=props.sharpAngle)
         if props.debug:
-            bpy.ops.wm.obj_import(filepath=qw.remeshed_path, check_existing=True, forward_axis="Y", up_axis="Z")
+            new_mesh = importer.import_mesh(qw.remeshed_path)
+            new_obj = bpy.data.objects.new(f"{obj.name} remeshAndField", new_mesh)
+            bpy.context.collection.objects.link(new_obj)
 
         # Trace
         qw.trace()
         if props.debug:
-            bpy.ops.wm.obj_import(filepath=qw.traced_path, check_existing=True, forward_axis="Y", up_axis="Z")
+            new_mesh = importer.import_mesh(qw.traced_path)
+            new_obj = bpy.data.objects.new(f"{obj.name} trace", new_mesh)
+            bpy.context.collection.objects.link(new_obj)
 
         # Convert to quads
         qw.quadrangulate(
@@ -100,16 +104,20 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
             qr_props.satsumaConfig,
         )
         if props.debug:
-            bpy.ops.wm.obj_import(filepath=qw.output_path, check_existing=True, forward_axis="Y", up_axis="Z")
+            new_mesh = importer.import_mesh(qw.output_path)
+            new_obj = bpy.data.objects.new(f"{obj.name} quadrangulate", new_mesh)
+            bpy.context.collection.objects.link(new_obj)
 
-        # Import remeshed OBJ
-        bpy.ops.wm.obj_import(filepath=qw.output_smoothed_path, check_existing=True, forward_axis="Y", up_axis="Z")
-        imported_obj = ctx.selected_objects[0]
-        imported_obj.name = f"{obj.name} Remeshed"
+        # Import final smoothed OBJ
+        final_mesh = importer.import_mesh(qw.output_smoothed_path)
+        final_obj = bpy.data.objects.new(f"{obj.name} Remeshed", final_mesh)
+        bpy.context.collection.objects.link(final_obj)
+        bpy.context.view_layer.objects.active = final_obj
+        final_obj.select_set(True)
 
         # Add Mirror modifier
         if props.symmetryX or props.symmetryY or props.symmetryZ:
-            mirror_modifier = imported_obj.modifiers.new("Mirror", "MIRROR")
+            mirror_modifier = final_obj.modifiers.new("Mirror", "MIRROR")
 
             mirror_modifier.use_axis[0] = props.symmetryX
             mirror_modifier.use_axis[1] = props.symmetryY
@@ -121,15 +129,9 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
 
         # Hide original
         obj.hide_set(True)
+
+        # Cleanup
         del qw
-
-        # Flush changes from wrapped bmesh / write back to mesh
-        # if mesh_obj.mode == 'EDIT':
-        #     bmesh.update_edit_mesh(mesh)
-        # else:
-        #     bm.to_mesh(mesh)
-        #     mesh.update()
-
         bm.free()
         del bm
         evaluated_obj.to_mesh_clear()
