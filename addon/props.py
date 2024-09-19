@@ -3,12 +3,13 @@ from bpy.props import *
 
 
 class MyPropertyGroup(PropertyGroup):
-    progress_factor:    FloatProperty(name="Progress %", description="Progress of operator", min=0, max=1, default=0, subtype="FACTOR")
-
-    enableRemesh:       BoolProperty(name="Preprocess", description="Run preprocess to try to fix mesh", default=False)
+    debug:              BoolProperty(name="Debug", description="Debug mode", default=False)
+    enableRemesh:       BoolProperty(name="Preprocess", description="Decimates, triangulates, and tries to fix common geometry issues", default=False)
     enableSharp:        BoolProperty(name="Sharp Detection", description="Enable detection of sharp features from edges marked sharp, seams, and from angle threshold", default=True)
-    sharpAngle:         FloatProperty(name="Sharp Angle", description="Angle threshold for sharp edges", min=0, soft_min=0, max=180, default=35, precision=2, step=1, subtype="FACTOR")
-
+    sharpAngle:         FloatProperty(name="Sharp Angle", description="Angle threshold for sharp edges", min=0, soft_min=0, max=180, default=35, precision=2, step=5, subtype="FACTOR")
+    symmetryX:          BoolProperty(name="X", description="Enable symmetry in X-axis", default=False)
+    symmetryY:          BoolProperty(name="Y", description="Enable symmetry in Y-axis", default=False)
+    symmetryZ:          BoolProperty(name="Z", description="Enable symmetry in Z-axis", default=False)
 
 class QRPropertyGroup(PropertyGroup):
     scaleFact: FloatProperty(
@@ -33,9 +34,10 @@ class QRPropertyGroup(PropertyGroup):
         description="Blends between isometry (alpha) and regularity (1-alpha)",
         default=0.01,
         min=0.0,
-        max=1.0,
+        max=0.999,
         precision=3,
-        step=0.5
+        step=0.5,
+        subtype="FACTOR"
     )
 
     ilpMethod: EnumProperty(
@@ -71,19 +73,19 @@ class QRPropertyGroup(PropertyGroup):
 
     isometry: BoolProperty(
         name="Isometry",
-        description="Activate isometry",
+        description="Enable isometry",
         default=True
     )
 
     regularityQuadrilaterals: BoolProperty(
         name="Regularity Quadrilaterals",
-        description="Activate regularity for quadrilaterals",
+        description="Enable regularity for quadrilaterals",
         default=True
     )
 
     regularityNonQuadrilaterals: BoolProperty(
         name="Regularity Non-Quadrilaterals",
-        description="Activate regularity for non-quadrilaterals",
+        description="Enable regularity for non-quadrilaterals",
         default=True
     )
 
@@ -97,7 +99,7 @@ class QRPropertyGroup(PropertyGroup):
 
     alignSingularities: BoolProperty(
         name="Align Singularities",
-        description="Activate singularity alignment",
+        description="Enable singularity alignment",
         default=True
     )
 

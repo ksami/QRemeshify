@@ -1,7 +1,8 @@
+import bmesh
 import bpy
 import os
 from .lib import Quadwild, Parameters
-from .util.export import export_sharp_features
+from .util import export, bisect
 
 
 class QUADWILD_OT_REMESH(bpy.types.Operator):
@@ -24,7 +25,7 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
             self.report({'INFO'}, "Multiple objects selected, will only operate on the first selected object")
 
         obj = selected_objs[0]
-        if obj.type != 'MESH':
+        if obj is None or obj.type != 'MESH':
             self.report({'ERROR_INVALID_INPUT'}, "Object is not a mesh")
             return {'CANCELLED'}
 
@@ -32,39 +33,46 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
             self.report({'ERROR_INVALID_INPUT'}, "Mesh has 0 faces")
             return {'CANCELLED'}
 
+
         # Get mesh after modifiers and shapekeys applied
         depsgraph = bpy.context.evaluated_depsgraph_get()
         evaluated_obj = obj.evaluated_get(depsgraph)
-        mesh = bpy.data.meshes.new_from_object(evaluated_obj, depsgraph=depsgraph)
+        mesh = evaluated_obj.to_mesh()
+        # mesh = bpy.data.meshes.new_from_object(evaluated_obj, depsgraph=depsgraph)
 
-        # TODO: bisect half if symmetrize
+        # Create a bmesh from mesh
+        # (won't affect mesh, unless explicitly written back)
+        bm = bmesh.new()
+        bm.from_mesh(mesh)
 
-        props.progress_factor = 0.0
+        # Bisect to prep for symmetry
+        if props.symmetryX or props.symmetryY or props.symmetryZ:
+            bisect.bisect_on_axes(bm, props.symmetryX, props.symmetryY, props.symmetryZ)
 
         mesh_name = os.path.join(bpy.app.tempdir, obj.name)
         mesh_filepath = f"{mesh_name}.obj"
         self.report({'DEBUG'}, f"Remeshing from {mesh_filepath}")
 
         # Export selected object as OBJ
-        bpy.ops.wm.obj_export(filepath=mesh_filepath, apply_modifiers=True, check_existing=False, export_selected_objects=True, export_materials=False)
-        props.progress_factor = 0.1
+        export.export_mesh(bm, mesh_filepath)
+        # bpy.ops.wm.obj_export(filepath=mesh_filepath, apply_modifiers=True, check_existing=False, export_selected_objects=True, export_materials=False, export_uv=False)
 
         # Load lib
         qw = Quadwild(mesh_filepath)
-        props.progress_factor = 0.2
 
         if props.enableSharp:
             # Calculate sharp
-            export_sharp_features(mesh, qw.sharp_path, props.sharpAngle)
-            props.progress_factor = 0.25
+            export.export_sharp_features(bm, qw.sharp_path, props.sharpAngle)
 
         # Remesh and calculate field
         qw.remeshAndField(remesh=props.enableRemesh, enableSharp=props.enableSharp, sharpAngle=props.sharpAngle)
-        props.progress_factor = 0.6
+        if props.debug:
+            bpy.ops.wm.obj_import(filepath=qw.remeshed_path, check_existing=True, forward_axis="Y", up_axis="Z")
 
         # Trace
         qw.trace()
-        props.progress_factor = 0.8
+        if props.debug:
+            bpy.ops.wm.obj_import(filepath=qw.traced_path, check_existing=True, forward_axis="Y", up_axis="Z")
 
         # Convert to quads
         qw.quadrangulate(
@@ -91,16 +99,40 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
             qr_props.flowConfig,
             qr_props.satsumaConfig,
         )
-        props.progress_factor = 0.95
+        if props.debug:
+            bpy.ops.wm.obj_import(filepath=qw.output_path, check_existing=True, forward_axis="Y", up_axis="Z")
 
         # Import remeshed OBJ
-        bpy.ops.wm.obj_import(filepath=qw.output_smoothed_path,  check_existing=True)
+        bpy.ops.wm.obj_import(filepath=qw.output_smoothed_path, check_existing=True, forward_axis="Y", up_axis="Z")
         imported_obj = ctx.selected_objects[0]
         imported_obj.name = f"{obj.name} Remeshed"
+
+        # Add Mirror modifier
+        if props.symmetryX or props.symmetryY or props.symmetryZ:
+            mirror_modifier = imported_obj.modifiers.new("Mirror", "MIRROR")
+
+            mirror_modifier.use_axis[0] = props.symmetryX
+            mirror_modifier.use_axis[1] = props.symmetryY
+            mirror_modifier.use_axis[2] = props.symmetryZ
+            mirror_modifier.use_clip = True
+            mirror_modifier.merge_threshold = 0.001
+
+            # bpy.ops.object.modifier_apply(modifier=mirror_modifier.name)
 
         # Hide original
         obj.hide_set(True)
         del qw
-        props.progress_factor = 1.0
+
+        # Flush changes from wrapped bmesh / write back to mesh
+        # if mesh_obj.mode == 'EDIT':
+        #     bmesh.update_edit_mesh(mesh)
+        # else:
+        #     bm.to_mesh(mesh)
+        #     mesh.update()
+
+        bm.free()
+        del bm
+        evaluated_obj.to_mesh_clear()
+
 
         return {'FINISHED'}

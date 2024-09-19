@@ -51,7 +51,7 @@ class Quadwild():
         self.mesh_path_without_ext, _ = os.path.splitext(mesh_path)
         self.sharp_path = f'{self.mesh_path_without_ext}_rem.sharp'
         self.field_path = f'{self.mesh_path_without_ext}_rem.rosy'
-        self.remeshed_path = f'{self.mesh_path_without_ext}_rem'
+        self.remeshed_path = f'{self.mesh_path_without_ext}_rem.obj'
         self.traced_path = f'{self.mesh_path_without_ext}_rem_p0.obj'
         self.output_path = f'{self.mesh_path_without_ext}_rem_p0_0_quadrangulation.obj'
         self.output_smoothed_path = f'{self.mesh_path_without_ext}_rem_p0_0_quadrangulation_smooth.obj'
@@ -75,7 +75,8 @@ class Quadwild():
             raise QWException("remeshAndField failed") from e
 
     def trace(self) -> bool:
-        filename_prefix_c = create_string(self.remeshed_path)
+        remeshed_path_without_ext, _ = os.path.splitext(self.remeshed_path)
+        filename_prefix_c = create_string(remeshed_path_without_ext)
         try:
             ret = self.quadwild.trace2(filename_prefix_c)
         except Exception as e:
@@ -85,10 +86,8 @@ class Quadwild():
 
     def quadrangulate(
             self,
-
             scaleFact,
             fixedChartClusters,
-
             alpha,
             ilpMethod,
             timeLimit,
@@ -105,7 +104,6 @@ class Quadwild():
             repeatLosingConstraintsNonQuads,
             repeatLosingConstraintsAlign,
             hardParityConstraint,
-
             flowConfig,
             satsumaConfig,
     ) -> int:

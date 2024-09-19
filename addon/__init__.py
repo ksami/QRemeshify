@@ -27,9 +27,18 @@ class QUADWILD_PT_UIPanel(bpy.types.Panel):
         layout = self.layout
 
         col = layout.column()
+        col.prop(props, "debug")
+
+        col.separator()
+
         col.prop(props, "enableRemesh")
         col.prop(props, "enableSharp")
         col.prop(props, "sharpAngle")
+
+        row = col.row(align=True, heading="Symmetry")
+        row.prop(props, "symmetryX", expand=True, toggle=1)
+        row.prop(props, "symmetryY", expand=True, toggle=1)
+        row.prop(props, "symmetryZ", expand=True, toggle=1)
 
         col.separator()
 
@@ -38,6 +47,7 @@ class QUADWILD_PT_UIPanel(bpy.types.Panel):
 
         col.separator()
 
+        # TODO: add presets based on config/prep_config and config/main_config/flow_*.txt
         col.prop(qr_props, "alpha")
         col.prop(qr_props, "ilpMethod")
         col.prop(qr_props, "timeLimit")
@@ -55,24 +65,12 @@ class QUADWILD_PT_UIPanel(bpy.types.Panel):
         col.prop(qr_props, "repeatLosingConstraintsAlign")
         col.prop(qr_props, "hardParityConstraint")
 
-        # col.prop(qr_props, "useFlowSolver")  # Should always use
         col.prop(qr_props, "flowConfig")
         col.prop(qr_props, "satsumaConfig")
 
 
         # TODO: split into 3 operators for advanced mode to tweak indiv steps
         col.operator(QUADWILD_OT_REMESH.bl_idname)
-
-        progress_factor = props.progress_factor
-        if progress_factor < 0.01:
-            progress_text = ""
-        else:
-            if progress_factor > 0.999:
-                progress_text = "Done"
-            else:
-                progress_text = "Running..."
-            col.progress(type='BAR', factor=progress_factor, text=progress_text)
-
 
 
 def register():
