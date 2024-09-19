@@ -1,0 +1,15 @@
+{
+    "double_cover": {
+        "max_deviation": 5,
+        "matching_solver": "Lemon",
+        "evening_mode": "MST",
+        "method": "HalfAsymmetric",
+        "verbosity": 1
+    },
+    "refine_with_matching": true,
+    "matching_solver": "Lemon",
+    "refinement_maxdev_min": 2,
+    "refinement_maxdev_max": 2,
+    "deviation_limit": "NodeThroughflow",
+    "verbosity": 2
+}

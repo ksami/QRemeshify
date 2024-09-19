@@ -98,8 +98,8 @@ def create_default_QRParameters():
     params.repeatLosingConstraintsAlign = 1
     params.hardParityConstraint = 1
     params.useFlowSolver = 1
-    params.flow_config_filename = "flow_virtual_simple.json".encode()
-    params.satsuma_config_filename = "satsuma_default.json".encode()
+    params.flow_config_filename = "config/main_config/flow_virtual_simple.json".encode()
+    params.satsuma_config_filename = "config/satsuma/default.json".encode()
 
     # Hardcoded in lib
     params.chartSmoothingIterations = 0

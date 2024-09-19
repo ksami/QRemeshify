@@ -2,6 +2,26 @@ import os
 from ctypes import *
 from .data import Parameters, QRParameters, create_string, create_default_QRParameters
 
+ilp_methods = {
+    "LEASTSQUARES": 1,
+    "ABS": 2,
+}
+
+flow_config_files = {
+    "SIMPLE": "config/main_config/flow_virtual_simple.json",
+    "HALF": "config/main_config/flow_virtual_half.json",
+}
+
+satsuma_config_files = {
+    "DEFAULT": "config/satsuma/default.json",
+    "MST": "config/satsuma/approx-mst.json",
+    "ROUND2EVEN": "config/satsuma/approx-round2even.json",
+    "SYMMDC": "config/satsuma/approx-symmdc.json",
+    "EDGETHRU": "config/satsuma/edgethru.json",
+    "LEMON": "config/satsuma/lemon.json",
+    "NODETHRU": "config/satsuma/nodethru.json",
+}
+
 class QWException(Exception):
     pass
 
@@ -41,10 +61,10 @@ class Quadwild():
         params = Parameters(
             remesh=remesh,
             sharpAngle=sharpAngle if enableSharp else -1,
-            alpha=0.01,
-            scaleFact=1,
             hasFeature=enableSharp,
             hasField=False,
+            alpha=0.01,  # Unused
+            scaleFact=1,  # Unused
         )
         mesh_filename_c = create_string(self.mesh_path)
         sharp_filename_c = create_string(self.sharp_path)
@@ -65,8 +85,10 @@ class Quadwild():
 
     def quadrangulate(
             self,
+
             scaleFact,
             fixedChartClusters,
+
             alpha,
             ilpMethod,
             timeLimit,
@@ -82,11 +104,15 @@ class Quadwild():
             repeatLosingConstraintsQuads,
             repeatLosingConstraintsNonQuads,
             repeatLosingConstraintsAlign,
-            hardParityConstraint
+            hardParityConstraint,
+
+            flowConfig,
+            satsumaConfig,
     ) -> int:
         params = create_default_QRParameters()
+
         params.alpha = alpha
-        params.ilpMethod = 1  # TODO: pending getter on enum to return int
+        params.ilpMethod = ilp_methods[ilpMethod]
         params.timeLimit = timeLimit
         params.gapLimit = gapLimit
         params.minimumGap = minimumGap
@@ -101,6 +127,9 @@ class Quadwild():
         params.repeatLosingConstraintsNonQuads = repeatLosingConstraintsNonQuads
         params.repeatLosingConstraintsAlign = repeatLosingConstraintsAlign
         params.hardParityConstraint = hardParityConstraint
+
+        params.flow_config_filename = flow_config_files[flowConfig].encode()
+        params.satsuma_config_filename = satsuma_config_files[satsumaConfig].encode()
 
         mesh_path_c = self.traced_path.encode()
         try:

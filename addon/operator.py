@@ -14,14 +14,22 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
     def execute(self, ctx):
         props = ctx.scene.quadwild_props
         qr_props = ctx.scene.quadpatches_props
+        selected_objs = ctx.selected_objects
 
-        obj = ctx.object
+        if len(selected_objs) == 0:
+            self.report({'ERROR_INVALID_INPUT'}, "No selected objects")
+            return {'CANCELLED'}
+
+        if len(selected_objs) > 1:
+            self.report({'INFO'}, "Multiple objects selected, will only operate on the first selected object")
+
+        obj = selected_objs[0]
         if obj.type != 'MESH':
-            self.report({'INFO'}, "Object isn't a mesh object")
+            self.report({'ERROR_INVALID_INPUT'}, "Object is not a mesh")
             return {'CANCELLED'}
 
         if len(obj.data.polygons) == 0:
-            self.report({'ERROR'}, "Mesh has 0 faces")
+            self.report({'ERROR_INVALID_INPUT'}, "Mesh has 0 faces")
             return {'CANCELLED'}
 
         # Get mesh after modifiers and shapekeys applied
@@ -29,13 +37,13 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
         evaluated_obj = obj.evaluated_get(depsgraph)
         mesh = bpy.data.meshes.new_from_object(evaluated_obj, depsgraph=depsgraph)
 
-        # TODO: discard half if symmetrize
+        # TODO: bisect half if symmetrize
 
         props.progress_factor = 0.0
 
         mesh_name = os.path.join(bpy.app.tempdir, obj.name)
         mesh_filepath = f"{mesh_name}.obj"
-        self.report({'INFO'}, f"Remeshing from {mesh_filepath}")
+        self.report({'DEBUG'}, f"Remeshing from {mesh_filepath}")
 
         # Export selected object as OBJ
         bpy.ops.wm.obj_export(filepath=mesh_filepath, apply_modifiers=True, check_existing=False, export_selected_objects=True, export_materials=False)
@@ -62,8 +70,9 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
         qw.quadrangulate(
             qr_props.scaleFact,
             qr_props.fixedChartClusters,
+
             qr_props.alpha,
-            qr_props.ilpMethod,  # TODO: getter to return int
+            qr_props.ilpMethod,
             qr_props.timeLimit,
             qr_props.gapLimit,
             qr_props.minimumGap,
@@ -77,9 +86,10 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
             qr_props.repeatLosingConstraintsQuads,
             qr_props.repeatLosingConstraintsNonQuads,
             qr_props.repeatLosingConstraintsAlign,
-            qr_props.hardParityConstraint
+            qr_props.hardParityConstraint,
 
-            # TODO: Flow config and satsuma config
+            qr_props.flowConfig,
+            qr_props.satsumaConfig,
         )
         props.progress_factor = 0.95
 

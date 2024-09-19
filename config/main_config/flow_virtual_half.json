@@ -1,0 +1,16 @@
+{
+    "paired_half_target": "half",
+    "paired_resolve_new_targets": false,
+    "paired_initial": {
+        "iso_weight": 0.5,
+        "iso_objective": "abs",
+        "unalign_weight": 1.0
+    },
+    "paired_resolve": {
+        "iso_weight": 0.5,
+        "iso_objective": "abs",
+        "unalign_weight": 1.0
+    },
+    "paired_iso_weight": 0.5,
+    "paired_iso_weight_resolve": 0.5
+}

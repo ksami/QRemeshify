@@ -1,0 +1,23 @@
+alpha 0.005
+ilpMethod 1
+timeLimit 200
+gapLimit 0.0
+callbackTimeLimit 8 3.00 5.000 10.0 20.0 30.0 60.0 90.0 120.0
+callbackGapLimit 8 0.005 0.02 0.05 0.10 0.15 0.20 0.25 0.3
+minimumGap 0.4
+isometry 1
+regularityQuadrilaterals 1
+regularityNonQuadrilaterals 1
+regularityNonQuadrilateralsWeight 0.9
+alignSingularities 0
+alignSingularitiesWeight 0.1
+repeatLosingConstraintsIterations 1
+repeatLosingConstraintsQuads 0
+repeatLosingConstraintsNonQuads 0
+repeatLosingConstraintsAlign 0
+hardParityConstraint 1
+scaleFact 1
+fixedChartClusters 0
+useFlowSolver 1
+flow_config_filename "config/main_config/flow_virtual_simple.json"
+satsuma_config_filename "config/satsuma/nodethru.json"
