@@ -39,7 +39,6 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
         depsgraph = bpy.context.evaluated_depsgraph_get()
         evaluated_obj = obj.evaluated_get(depsgraph)
         mesh = evaluated_obj.to_mesh()
-        # mesh = bpy.data.meshes.new_from_object(evaluated_obj, depsgraph=depsgraph)
 
         # Create a bmesh from mesh
         # (won't affect mesh, unless explicitly written back)
@@ -63,13 +62,12 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
 
         # Export selected object as OBJ
         exporter.export_mesh(bm, mesh_filepath)
-        # bpy.ops.wm.obj_export(filepath=mesh_filepath, apply_modifiers=True, check_existing=False, export_selected_objects=True, export_materials=False, export_uv=False)
 
         # Load lib
         qw = Quadwild(mesh_filepath)
 
+        # Calculate sharp features
         if props.enableSharp:
-            # Calculate sharp
             exporter.export_sharp_features(bm, qw.sharp_path, props.sharpAngle)
 
         # Remesh and calculate field
@@ -123,7 +121,7 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
         bpy.context.view_layer.objects.active = final_obj
         final_obj.select_set(True)
 
-        # Add Mirror modifier
+        # Add Mirror modifier for symmetry
         if props.symmetryX or props.symmetryY or props.symmetryZ:
             mirror_modifier = final_obj.modifiers.new("Mirror", "MIRROR")
 
@@ -132,8 +130,6 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
             mirror_modifier.use_axis[2] = props.symmetryZ
             mirror_modifier.use_clip = True
             mirror_modifier.merge_threshold = 0.001
-
-            # bpy.ops.object.modifier_apply(modifier=mirror_modifier.name)
 
         # Hide original
         obj.hide_set(True)

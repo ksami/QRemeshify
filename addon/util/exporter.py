@@ -39,7 +39,7 @@ def export_mesh(bm: bmesh.types.BMesh, mesh_filepath: str):
         verts.append(f"v {v.co.x:.6f} {v.co.y:.6f} {v.co.z:.6f}")
 
     for fid, f in enumerate(bm.faces):
-        # TODO: Blender will export per face normals if flat-shaded, per face per loop normals if smooth-shaded
+        # NOTE: Blender will export per face normals if flat-shaded, per face per loop normals if smooth-shaded
         vert_normals.append(f"vn {f.normal.x:.4f} {f.normal.y:.4f} {f.normal.z:.4f}")
 
         face_verts = []
