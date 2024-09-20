@@ -66,7 +66,7 @@ def create_default_QRParameters():
 
     params = QRParameters()
 
-    # TODO: Possibly unused
+    # Possibly unused
     params.initialRemeshing = True
     params.initialRemeshingEdgeFactor = 1
     params.reproject = True

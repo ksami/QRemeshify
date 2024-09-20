@@ -1,5 +1,5 @@
-import bpy
-from .operator import QUADWILD_OT_REMESH
+from bpy.types import Context, Panel
+from .operator import QUADWILD_OT_Remesh
 
 
 class BasePanel:
@@ -9,11 +9,11 @@ class BasePanel:
     bl_context = 'objectmode'
 
 
-class QUADWILD_PT_UIPanel(BasePanel, bpy.types.Panel):
+class QUADWILD_PT_UIPanel(BasePanel, Panel):
     bl_idname = "QUADWILD_PT_UIPanel"
     bl_label = "Quadwild Remesh"
 
-    def draw(self, ctx: bpy.types.Context):
+    def draw(self, ctx: Context):
         props = ctx.scene.quadwild_props
 
         layout = self.layout
@@ -40,15 +40,15 @@ class QUADWILD_PT_UIPanel(BasePanel, bpy.types.Panel):
 
         layout.separator()
 
-        layout.operator(QUADWILD_OT_REMESH.bl_idname, icon="MESH_GRID")
+        layout.operator(QUADWILD_OT_Remesh.bl_idname, icon="MESH_GRID")
 
 
-class QUADWILD_PT_UISubPanel(BasePanel, bpy.types.Panel):
+class QUADWILD_PT_UISubPanel(BasePanel, Panel):
     bl_parent_id = "QUADWILD_PT_UIPanel"
     bl_label = "Advanced"
     bl_options = {'DEFAULT_CLOSED'}
 
-    def draw(self, ctx: bpy.types.Context):
+    def draw(self, ctx: Context):
         qr_props = ctx.scene.quadpatches_props
 
         layout = self.layout
@@ -110,12 +110,12 @@ class QUADWILD_PT_UISubPanel(BasePanel, bpy.types.Panel):
         col.prop(qr_props, "isometry")
         col.prop(qr_props, "hardParityConstraint")
 
-class QUADWILD_PT_UISubSubPanel(BasePanel, bpy.types.Panel):
+class QUADWILD_PT_UISubSubPanel(BasePanel, Panel):
     bl_parent_id = "QUADWILD_PT_UISubPanel"
     bl_label = "Callback Limits"
     bl_options = {'DEFAULT_CLOSED'}
 
-    def draw(self, ctx: bpy.types.Context):
+    def draw(self, ctx: Context):
         qr_props = ctx.scene.quadpatches_props
 
         layout = self.layout
