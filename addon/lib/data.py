@@ -61,8 +61,8 @@ def create_string(input):
 
 
 def create_default_QRParameters():
-    callbackTimeLimitDefault = [8, 3.00, 5.000, 10.0, 20.0, 30.0, 60.0, 90.0, 120.0]
-    callbackGapLimitDefault = [8, 0.005, 0.02, 0.05, 0.10, 0.15, 0.20, 0.25, 0.3]
+    callbackTimeLimitDefault = [3.00, 5.000, 10.0, 20.0, 30.0, 60.0, 90.0, 120.0]
+    callbackGapLimitDefault = [0.005, 0.02, 0.05, 0.10, 0.15, 0.20, 0.25, 0.3]
 
     params = QRParameters()
 

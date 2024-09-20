@@ -2,7 +2,7 @@ import bmesh
 import bpy
 import mathutils
 import os
-from .lib import Quadwild, Parameters
+from .lib import Quadwild
 from .util import bisect, exporter, importer
 
 
@@ -72,14 +72,14 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
 
         # Remesh and calculate field
         qw.remeshAndField(remesh=props.enableRemesh, enableSharp=props.enableSharp, sharpAngle=props.sharpAngle)
-        if props.debug:
+        if qr_props.debug:
             new_mesh = importer.import_mesh(qw.remeshed_path)
             new_obj = bpy.data.objects.new(f"{obj.name} remeshAndField", new_mesh)
             bpy.context.collection.objects.link(new_obj)
 
         # Trace
         qw.trace()
-        if props.debug:
+        if qr_props.debug:
             new_mesh = importer.import_mesh(qw.traced_path)
             new_obj = bpy.data.objects.new(f"{obj.name} trace", new_mesh)
             bpy.context.collection.objects.link(new_obj)
@@ -109,7 +109,7 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
             qr_props.flowConfig,
             qr_props.satsumaConfig,
         )
-        if props.debug:
+        if qr_props.debug:
             new_mesh = importer.import_mesh(qw.output_path)
             new_obj = bpy.data.objects.new(f"{obj.name} quadrangulate", new_mesh)
             bpy.context.collection.objects.link(new_obj)
