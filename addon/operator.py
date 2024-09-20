@@ -108,6 +108,9 @@ class QUADWILD_OT_REMESH(bpy.types.Operator):
 
             qr_props.flowConfig,
             qr_props.satsumaConfig,
+
+            qr_props.callbackTimeLimit,
+            qr_props.callbackGapLimit,
         )
         if qr_props.debug:
             new_mesh = importer.import_mesh(qw.output_path)

@@ -172,7 +172,6 @@ class QRPropertyGroup(PropertyGroup):
         default="DEFAULT"
     )
 
-    # TODO: Pass to operator
     callbackTimeLimit: FloatVectorProperty(
         name="Callback Time Limit",
         description="Callback time limit",

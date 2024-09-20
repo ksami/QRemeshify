@@ -86,26 +86,28 @@ class Quadwild():
 
     def quadrangulate(
             self,
-            scaleFact,
-            fixedChartClusters,
-            alpha,
-            ilpMethod,
-            timeLimit,
-            gapLimit,
-            minimumGap,
-            isometry,
-            regularityQuadrilaterals,
-            regularityNonQuadrilaterals,
-            regularityNonQuadrilateralsWeight,
-            alignSingularities,
-            alignSingularitiesWeight,
-            repeatLosingConstraintsIterations,
-            repeatLosingConstraintsQuads,
-            repeatLosingConstraintsNonQuads,
-            repeatLosingConstraintsAlign,
-            hardParityConstraint,
-            flowConfig,
-            satsumaConfig,
+            scaleFact: float,
+            fixedChartClusters: int,
+            alpha: float,
+            ilpMethod: str,
+            timeLimit: int,
+            gapLimit: float,
+            minimumGap: float,
+            isometry: bool,
+            regularityQuadrilaterals: bool,
+            regularityNonQuadrilaterals: bool,
+            regularityNonQuadrilateralsWeight: float,
+            alignSingularities: bool,
+            alignSingularitiesWeight: float,
+            repeatLosingConstraintsIterations: bool,
+            repeatLosingConstraintsQuads: bool,
+            repeatLosingConstraintsNonQuads: bool,
+            repeatLosingConstraintsAlign: bool,
+            hardParityConstraint: bool,
+            flowConfig: str,
+            satsumaConfig: str,
+            callbackTimeLimit: list[float],
+            callbackGapLimit: list[float],
     ) -> int:
         params = create_default_QRParameters()
 
@@ -128,6 +130,9 @@ class Quadwild():
 
         params.flow_config_filename = flow_config_files[flowConfig].encode()
         params.satsuma_config_filename = satsuma_config_files[satsumaConfig].encode()
+
+        params.callbackTimeLimit = (c_float * len(callbackTimeLimit))(*callbackTimeLimit)
+        params.callbackGapLimit = (c_float * len(callbackGapLimit))(*callbackGapLimit)
 
         mesh_path_c = self.traced_path.encode()
         try:

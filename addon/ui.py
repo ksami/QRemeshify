@@ -71,7 +71,6 @@ class QUADWILD_PT_UISubPanel(BasePanel, bpy.types.Panel):
 
         row = layout.row()
         col = row.column()
-        col.prop(qr_props, "scaleFact")
         col.prop(qr_props, "alpha")
         col.prop(qr_props, "ilpMethod")
 
@@ -103,6 +102,7 @@ class QUADWILD_PT_UISubPanel(BasePanel, bpy.types.Panel):
 
         row = layout.row()
         col = row.column()
+        col.prop(qr_props, "scaleFact")
         col.prop(qr_props, "fixedChartClusters")
         col.prop(qr_props, "timeLimit")
         col.prop(qr_props, "gapLimit")
@@ -123,5 +123,5 @@ class QUADWILD_PT_UISubSubPanel(BasePanel, bpy.types.Panel):
         layout.use_property_decorate = False  # No animation.
 
         col = layout.column()
-        col.prop(qr_props, "callbackTimeLimit")
-        col.prop(qr_props, "callbackGapLimit")
+        col.prop(qr_props, "callbackTimeLimit", text="Time Limit")
+        col.prop(qr_props, "callbackGapLimit", text="Gap Limit")
