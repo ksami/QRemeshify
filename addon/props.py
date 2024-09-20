@@ -38,7 +38,7 @@ class QRPropertyGroup(PropertyGroup):
     alpha: FloatProperty(
         name="Alpha",
         description="Blends between isometry (alpha) and regularity (1-alpha)",
-        default=0.01,
+        default=0.005,
         min=0.0,
         max=0.999,
         precision=3,
