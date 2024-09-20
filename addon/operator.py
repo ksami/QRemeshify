@@ -68,7 +68,8 @@ class QUADWILD_OT_Remesh(bpy.types.Operator):
 
         # Calculate sharp features
         if props.enableSharp:
-            exporter.export_sharp_features(bm, qw.sharp_path, props.sharpAngle)
+            num_sharp_features = exporter.export_sharp_features(bm, qw.sharp_path, props.sharpAngle)
+            self.report({'DEBUG'}, f"Found {num_sharp_features} sharp edges")
 
         # Remesh and calculate field
         qw.remeshAndField(remesh=props.enableRemesh, enableSharp=props.enableSharp, sharpAngle=props.sharpAngle)

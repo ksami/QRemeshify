@@ -78,11 +78,9 @@ class Quadwild():
         remeshed_path_without_ext, _ = os.path.splitext(self.remeshed_path)
         filename_prefix_c = create_string(remeshed_path_without_ext)
         try:
-            ret = self.quadwild.trace2(filename_prefix_c)
+            return self.quadwild.trace2(filename_prefix_c)
         except Exception as e:
             raise QWException("trace failed") from e
-        print(ret)
-        return ret
 
     def quadrangulate(
             self,
@@ -136,11 +134,9 @@ class Quadwild():
 
         mesh_path_c = self.traced_path.encode()
         try:
-            ret = self.quadpatches.quadPatches(mesh_path_c, byref(params), scaleFact, fixedChartClusters)
+            return self.quadpatches.quadPatches(mesh_path_c, byref(params), scaleFact, fixedChartClusters)
         except Exception as e:
             raise QWException("quadPatches failed") from e
-        print(ret)
-        return ret
 
 
 if __name__ == '__main__':

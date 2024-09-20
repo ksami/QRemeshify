@@ -61,7 +61,6 @@ class QUADWILD_PT_UISubPanel(BasePanel, Panel):
 
         layout.separator(type="LINE")
 
-        # TODO: add presets based on config/prep_config and config/main_config/flow_*.txt
         row = layout.row()
         col = row.column()
         col.prop(qr_props, "flowConfig")

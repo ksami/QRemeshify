@@ -2,7 +2,7 @@ import bmesh
 import math
 
 
-def export_sharp_features(bm: bmesh.types.BMesh, sharp_filepath: str, sharp_angle: float=35):
+def export_sharp_features(bm: bmesh.types.BMesh, sharp_filepath: str, sharp_angle: float=35) -> int:
     """Export edges marked sharp, boundary, and seams as sharp features as OBJ format"""
 
     sharp_edges = []
@@ -19,16 +19,16 @@ def export_sharp_features(bm: bmesh.types.BMesh, sharp_filepath: str, sharp_angl
             sharp_edges.append(f"{convexity},{face_index},{edge_index}")
 
     num_sharp_features = len(sharp_edges)
-    print(f"Found {num_sharp_features} sharp edges")
-
     with open(sharp_filepath, 'w') as f:
         f.write(f"{num_sharp_features}\n")
         for edge in sharp_edges:
             f.write(f"{edge}\n")
         f.close()
 
+    return num_sharp_features
 
-def export_mesh(bm: bmesh.types.BMesh, mesh_filepath: str):
+
+def export_mesh(bm: bmesh.types.BMesh, mesh_filepath: str) -> None:
     """Export mesh as OBJ format"""
 
     verts = []
