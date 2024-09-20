@@ -6,8 +6,9 @@ def import_mesh(mesh_filepath: str) -> bpy.types.Mesh:
     if not os.path.isfile(mesh_filepath):
         raise Exception(f"File does not exist at {mesh_filepath}")
 
-    with open(mesh_filepath) as f:
+    with open(mesh_filepath, 'r') as f:
         lines = f.read().splitlines()
+        f.close()
 
     verts = []
     edges = []
