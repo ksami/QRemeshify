@@ -20,13 +20,10 @@ class QUADWILD_PT_UIPanel(BasePanel, Panel):
         layout.use_property_split = True
         layout.use_property_decorate = False  # No animation.
 
-        row = layout.row(heading="Preprocess")
-        row.prop(props, "enableRemesh", text="Enable")
-
-        layout.separator(factor=0.1)
-
-        row = layout.row(heading="Smoothing")
-        row.prop(props, "enableSmoothing", text="Enable")
+        row = layout.row()
+        col = layout.column(heading="Enable")
+        col.prop(props, "enableRemesh")
+        col.prop(props, "enableSmoothing")
 
         layout.separator(factor=0.1)
 

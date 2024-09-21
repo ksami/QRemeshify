@@ -30,10 +30,8 @@ class Quadwild():
         if mesh_path is None or len(mesh_path) == 0:
             raise QWException("mesh_path is empty")
 
-        # quadpatches_lib_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib_quadpatches.dll')
-        # quadwild_lib_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib_quadwild.dll')
-        quadpatches_lib_path = 'D:\programming\quadwild-bimdf\\build\Build\\bin\Release\lib_quadpatches.dll'
-        quadwild_lib_path = 'D:\programming\quadwild-bimdf\\build\Build\\bin\Release\lib_quadwild.dll'
+        quadpatches_lib_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib_quadpatches.dll')
+        quadwild_lib_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib_quadwild.dll')
 
         self.quadpatches = cdll.LoadLibrary(quadpatches_lib_path)
         self.quadwild = cdll.LoadLibrary(quadwild_lib_path)
