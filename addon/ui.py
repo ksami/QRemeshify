@@ -62,8 +62,9 @@ class QUADWILD_PT_UISubPanel(BasePanel, Panel):
         layout.use_property_decorate = False  # No animation.
 
         row = layout.row()
-        col = row.column(heading="Debug")
-        col.prop(props, "debug", text="Enable")
+        col = row.column()
+        col.prop(props, "debug")
+        col.prop(props, "useCache")
 
         layout.separator(type="LINE")
 

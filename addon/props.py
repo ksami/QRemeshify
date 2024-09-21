@@ -3,7 +3,8 @@ from bpy.props import *
 
 
 class QWPropertyGroup(PropertyGroup):
-    debug:              BoolProperty(name="Debug", description="Show meshes from intermediate steps", default=False)
+    debug:              BoolProperty(name="Debug Mode", description="Show meshes from intermediate steps", default=False)
+    useCache:           BoolProperty(name="Use Cache", description="Reuses previously calculated features and only runs quadrangulate step. Must run all steps at least once before enabling this.\n(May be out of sync if mesh has been modified)", default=False)
     enableRemesh:       BoolProperty(name="Preprocess", description="Decimates, triangulates, and tries to fix common geometry issues", default=False)
     enableSmoothing:    BoolProperty(name="Smoothing", description="Performs smoothing after quadrangulation (slow on large meshes)", default=True)
     enableSharp:        BoolProperty(name="Sharp Detection", description="Enable detection of sharp features from edges marked sharp, seams, and from angle threshold", default=True)
