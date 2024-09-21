@@ -25,6 +25,11 @@ class QUADWILD_PT_UIPanel(BasePanel, Panel):
 
         layout.separator(factor=0.1)
 
+        row = layout.row(heading="Smoothing")
+        row.prop(props, "enableSmoothing", text="Enable")
+
+        layout.separator(factor=0.1)
+
         row = layout.row()
         col = row.column(heading="Sharp Detect")
         row = col.row()
@@ -49,6 +54,7 @@ class QUADWILD_PT_UISubPanel(BasePanel, Panel):
     bl_options = {'DEFAULT_CLOSED'}
 
     def draw(self, ctx: Context):
+        props = ctx.scene.quadwild_props
         qr_props = ctx.scene.quadpatches_props
 
         layout = self.layout
@@ -57,7 +63,7 @@ class QUADWILD_PT_UISubPanel(BasePanel, Panel):
 
         row = layout.row()
         col = row.column(heading="Debug")
-        col.prop(qr_props, "debug", text="Enable")
+        col.prop(props, "debug", text="Enable")
 
         layout.separator(type="LINE")
 

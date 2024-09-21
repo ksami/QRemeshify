@@ -44,7 +44,7 @@ class Quadwild():
         self.quadwild.trace2.argtypes = [c_char_p]
         self.quadwild.trace2.restype = c_bool
 
-        self.quadpatches.quadPatches.argtypes = [c_char_p, POINTER(QRParameters), c_float, c_int]
+        self.quadpatches.quadPatches.argtypes = [c_char_p, POINTER(QRParameters), c_float, c_int, c_bool]
         self.quadpatches.quadPatches.restype = c_int
 
         self.mesh_path = mesh_path
@@ -84,6 +84,7 @@ class Quadwild():
 
     def quadrangulate(
             self,
+            enableSmoothing: bool,
             scaleFact: float,
             fixedChartClusters: int,
             alpha: float,
@@ -134,7 +135,7 @@ class Quadwild():
 
         mesh_path_c = self.traced_path.encode()
         try:
-            return self.quadpatches.quadPatches(mesh_path_c, byref(params), scaleFact, fixedChartClusters)
+            return self.quadpatches.quadPatches(mesh_path_c, byref(params), scaleFact, fixedChartClusters, enableSmoothing)
         except Exception as e:
             raise QWException("quadPatches failed") from e
 

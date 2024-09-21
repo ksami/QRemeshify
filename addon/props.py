@@ -3,7 +3,9 @@ from bpy.props import *
 
 
 class QWPropertyGroup(PropertyGroup):
+    debug:              BoolProperty(name="Debug", description="Show meshes from intermediate steps", default=False)
     enableRemesh:       BoolProperty(name="Preprocess", description="Decimates, triangulates, and tries to fix common geometry issues", default=False)
+    enableSmoothing:    BoolProperty(name="Smoothing", description="Performs smoothing after quadrangulation (slow on large meshes)", default=True)
     enableSharp:        BoolProperty(name="Sharp Detection", description="Enable detection of sharp features from edges marked sharp, seams, and from angle threshold", default=True)
     sharpAngle:         FloatProperty(name="Angle Threshold", description="Angle threshold for sharp edges", min=0, soft_min=0.1, max=180, soft_max=179.9, default=35, precision=1, step=10, subtype="UNSIGNED")
     symmetryX:          BoolProperty(name="X", description="Enable symmetry in X-axis", default=False)
@@ -12,11 +14,6 @@ class QWPropertyGroup(PropertyGroup):
 
 
 class QRPropertyGroup(PropertyGroup):
-    debug: BoolProperty(
-        name="Debug",
-        description="Show meshes from intermediate steps",
-        default=False
-    )
 
     scaleFact: FloatProperty(
         name="Scale Factor",

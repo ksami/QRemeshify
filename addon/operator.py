@@ -73,20 +73,21 @@ class QUADWILD_OT_Remesh(bpy.types.Operator):
 
         # Remesh and calculate field
         qw.remeshAndField(remesh=props.enableRemesh, enableSharp=props.enableSharp, sharpAngle=props.sharpAngle)
-        if qr_props.debug:
+        if props.debug:
             new_mesh = importer.import_mesh(qw.remeshed_path)
             new_obj = bpy.data.objects.new(f"{obj.name} remeshAndField", new_mesh)
             bpy.context.collection.objects.link(new_obj)
 
         # Trace
         qw.trace()
-        if qr_props.debug:
+        if props.debug:
             new_mesh = importer.import_mesh(qw.traced_path)
             new_obj = bpy.data.objects.new(f"{obj.name} trace", new_mesh)
             bpy.context.collection.objects.link(new_obj)
 
         # Convert to quads
         qw.quadrangulate(
+            props.enableSmoothing,
             qr_props.scaleFact,
             qr_props.fixedChartClusters,
 
@@ -113,13 +114,14 @@ class QUADWILD_OT_Remesh(bpy.types.Operator):
             qr_props.callbackTimeLimit,
             qr_props.callbackGapLimit,
         )
-        if qr_props.debug:
+        if props.debug and props.enableSmoothing:
             new_mesh = importer.import_mesh(qw.output_path)
             new_obj = bpy.data.objects.new(f"{obj.name} quadrangulate", new_mesh)
             bpy.context.collection.objects.link(new_obj)
 
-        # Import final smoothed OBJ
-        final_mesh = importer.import_mesh(qw.output_smoothed_path)
+        # Import final OBJ
+        final_mesh_path = qw.output_smoothed_path if props.enableSmoothing else qw.output_path
+        final_mesh = importer.import_mesh(final_mesh_path)
         final_obj = bpy.data.objects.new(f"{obj.name} Remeshed", final_mesh)
         bpy.context.collection.objects.link(final_obj)
         bpy.context.view_layer.objects.active = final_obj
