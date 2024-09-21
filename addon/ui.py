@@ -45,7 +45,7 @@ class QUADWILD_PT_UIPanel(BasePanel, Panel):
         layout.operator(QUADWILD_OT_Remesh.bl_idname, icon="MESH_GRID")
 
 
-class QUADWILD_PT_UISubPanel(BasePanel, Panel):
+class QUADWILD_PT_UIAdvancedPanel(BasePanel, Panel):
     bl_parent_id = "QUADWILD_PT_UIPanel"
     bl_label = "Advanced"
     bl_options = {'DEFAULT_CLOSED'}
@@ -113,7 +113,7 @@ class QUADWILD_PT_UISubPanel(BasePanel, Panel):
         col.prop(qr_props, "isometry")
         col.prop(qr_props, "hardParityConstraint")
 
-class QUADWILD_PT_UISubSubPanel(BasePanel, Panel):
+class QUADWILD_PT_UICallbackPanel(BasePanel, Panel):
     bl_parent_id = "QUADWILD_PT_UISubPanel"
     bl_label = "Callback Limits"
     bl_options = {'DEFAULT_CLOSED'}

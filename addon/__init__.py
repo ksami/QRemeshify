@@ -12,15 +12,15 @@ bl_info = {
 import bpy
 from .operator import QUADWILD_OT_Remesh
 from .props import QWPropertyGroup, QRPropertyGroup
-from .ui import QUADWILD_PT_UIPanel, QUADWILD_PT_UISubPanel, QUADWILD_PT_UISubSubPanel
+from .ui import QUADWILD_PT_UIPanel, QUADWILD_PT_UIAdvancedPanel, QUADWILD_PT_UICallbackPanel
 
 
 classes = [
     QWPropertyGroup,
     QRPropertyGroup,
     QUADWILD_PT_UIPanel,
-    QUADWILD_PT_UISubPanel,
-    QUADWILD_PT_UISubSubPanel,
+    QUADWILD_PT_UIAdvancedPanel,
+    QUADWILD_PT_UICallbackPanel,
     QUADWILD_OT_Remesh,
 ]
 
