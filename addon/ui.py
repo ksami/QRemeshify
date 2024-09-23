@@ -114,7 +114,7 @@ class QUADWILD_PT_UIAdvancedPanel(BasePanel, Panel):
         col.prop(qr_props, "hardParityConstraint")
 
 class QUADWILD_PT_UICallbackPanel(BasePanel, Panel):
-    bl_parent_id = "QUADWILD_PT_UISubPanel"
+    bl_parent_id = "QUADWILD_PT_UIAdvancedPanel"
     bl_label = "Callback Limits"
     bl_options = {'DEFAULT_CLOSED'}
 
