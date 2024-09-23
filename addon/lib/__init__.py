@@ -1,5 +1,6 @@
-import os
+import platform
 from ctypes import *
+from os import path
 from .data import Parameters, QRParameters, create_string, create_default_QRParameters
 
 ilp_methods = {
@@ -30,11 +31,22 @@ class Quadwild():
         if mesh_path is None or len(mesh_path) == 0:
             raise QWException("mesh_path is empty")
 
-        quadpatches_lib_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib_quadpatches.dll')
-        quadwild_lib_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib_quadwild.dll')
+        system = platform.system()
+        if system == "Windows":
+            quadwild_lib_filename = 'lib_quadwild.dll'
+            quadpatches_lib_filename = 'lib_quadpatches.dll'
+        elif system == "Darwin":
+            quadwild_lib_filename = 'liblib_quadwild.dylib'
+            quadpatches_lib_filename = 'liblib_quadpatches.dylib'
+        else:
+            quadwild_lib_filename = 'liblib_quadwild.so'
+            quadpatches_lib_filename = 'liblib_quadpatches.so'
 
-        self.quadpatches = cdll.LoadLibrary(quadpatches_lib_path)
+        quadwild_lib_path = path.join(path.dirname(path.abspath(__file__)), quadwild_lib_filename)
+        quadpatches_lib_path = path.join(path.dirname(path.abspath(__file__)), quadpatches_lib_filename)
+
         self.quadwild = cdll.LoadLibrary(quadwild_lib_path)
+        self.quadpatches = cdll.LoadLibrary(quadpatches_lib_path)
 
         self.quadwild.remeshAndField2.argtypes = [POINTER(Parameters), c_char_p, c_char_p, c_char_p]
         self.quadwild.remeshAndField2.restype = None
@@ -46,7 +58,7 @@ class Quadwild():
         self.quadpatches.quadPatches.restype = c_int
 
         self.mesh_path = mesh_path
-        self.mesh_path_without_ext, _ = os.path.splitext(mesh_path)
+        self.mesh_path_without_ext, _ = path.splitext(mesh_path)
         self.sharp_path = f'{self.mesh_path_without_ext}_rem.sharp'
         self.field_path = f'{self.mesh_path_without_ext}_rem.rosy'
         self.remeshed_path = f'{self.mesh_path_without_ext}_rem.obj'
@@ -73,7 +85,7 @@ class Quadwild():
             raise QWException("remeshAndField failed") from e
 
     def trace(self) -> bool:
-        remeshed_path_without_ext, _ = os.path.splitext(self.remeshed_path)
+        remeshed_path_without_ext, _ = path.splitext(self.remeshed_path)
         filename_prefix_c = create_string(remeshed_path_without_ext)
         try:
             return self.quadwild.trace2(filename_prefix_c)
@@ -136,10 +148,3 @@ class Quadwild():
             return self.quadpatches.quadPatches(mesh_path_c, byref(params), scaleFact, fixedChartClusters, enableSmoothing)
         except Exception as e:
             raise QWException("quadPatches failed") from e
-
-
-if __name__ == '__main__':
-    qw = Quadwild('example/suzanne.obj')
-    qw.remeshAndField()
-    qw.trace()
-    qw.quadrangulate()
