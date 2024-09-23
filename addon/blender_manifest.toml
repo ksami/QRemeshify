@@ -2,11 +2,11 @@ schema_version = "1.0.0"
 
 # Example of manifest file for a Blender extension
 # Change the values according to your extension
-id = "my_example_extension"
+id = "qremeshify"
 version = "1.0.0"
-name = "Test Extension"
-tagline = "This is another extension"
-maintainer = "Developer name <email@address.com>"
+name = "QRemeshify"
+tagline = "Remesher with good-quality quad topology"
+maintainer = "ksami"
 # Supported types: "add-on", "theme"
 type = "add-on"
 
@@ -15,7 +15,7 @@ type = "add-on"
 
 # Optional list defined by Blender and server, see:
 # https://docs.blender.org/manual/en/dev/advanced/extensions/tags.html
-tags = ["Mesh", "Modeling"]
+tags = ["Mesh"]
 
 blender_version_min = "4.2.0"
 # # Optional: Blender version that the extension does not support, earlier versions are supported.
@@ -34,7 +34,7 @@ license = [
 # ]
 
 # Optional list of supported platforms. If omitted, the extension will be available in all operating systems.
-# platforms = ["windows-x64", "macos-arm64", "linux-x64"]
+platforms = ["windows-x64", "macos-arm64", "linux-x64"]
 # Other supported platforms: "windows-arm64", "macos-x64"
 
 # Optional: bundle 3rd party Python modules.

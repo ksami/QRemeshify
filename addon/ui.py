@@ -1,17 +1,17 @@
 from bpy.types import Context, Panel
-from .operator import QUADWILD_OT_Remesh
+from .operator import QREMESH_OT_Remesh
 
 
 class BasePanel:
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "Remesh"
+    bl_category = "QRemeshify"
     bl_context = 'objectmode'
 
 
-class QUADWILD_PT_UIPanel(BasePanel, Panel):
-    bl_idname = "QUADWILD_PT_UIPanel"
-    bl_label = "Quadwild Remesh"
+class QREMESH_PT_UIPanel(BasePanel, Panel):
+    bl_idname = "QREMESH_PT_UIPanel"
+    bl_label = "QRemeshify"
 
     def draw(self, ctx: Context):
         props = ctx.scene.quadwild_props
@@ -42,11 +42,11 @@ class QUADWILD_PT_UIPanel(BasePanel, Panel):
 
         layout.separator()
 
-        layout.operator(QUADWILD_OT_Remesh.bl_idname, icon="MESH_GRID")
+        layout.operator(QREMESH_OT_Remesh.bl_idname, icon="MESH_GRID")
 
 
-class QUADWILD_PT_UIAdvancedPanel(BasePanel, Panel):
-    bl_parent_id = "QUADWILD_PT_UIPanel"
+class QREMESH_PT_UIAdvancedPanel(BasePanel, Panel):
+    bl_parent_id = "QREMESH_PT_UIPanel"
     bl_label = "Advanced"
     bl_options = {'DEFAULT_CLOSED'}
 
@@ -113,8 +113,8 @@ class QUADWILD_PT_UIAdvancedPanel(BasePanel, Panel):
         col.prop(qr_props, "isometry")
         col.prop(qr_props, "hardParityConstraint")
 
-class QUADWILD_PT_UICallbackPanel(BasePanel, Panel):
-    bl_parent_id = "QUADWILD_PT_UIAdvancedPanel"
+class QREMESH_PT_UICallbackPanel(BasePanel, Panel):
+    bl_parent_id = "QREMESH_PT_UIAdvancedPanel"
     bl_label = "Callback Limits"
     bl_options = {'DEFAULT_CLOSED'}
 

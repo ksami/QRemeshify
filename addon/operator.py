@@ -6,9 +6,9 @@ from .lib import Quadwild
 from .util import bisect, exporter, importer
 
 
-class QUADWILD_OT_Remesh(bpy.types.Operator):
+class QREMESH_OT_Remesh(bpy.types.Operator):
     """Remesh with Quadwild"""
-    bl_idname = "quadwild.remesh"
+    bl_idname = "qremeshify.remesh"
     bl_label = "Remesh"
     bl_options = {'REGISTER', 'UNDO'}
 

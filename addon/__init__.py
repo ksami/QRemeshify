@@ -1,27 +1,16 @@
-bl_info = {
-    "name": "Test Addon",
-    "description": "Addon for testing",
-    "author": "Tester",
-    "blender": (4, 2, 0),
-    "version": (0, 0, 1),
-    "category": "Test",
-    "location": "View3D > UI > Test addon operator",
-}
-
-
 import bpy
-from .operator import QUADWILD_OT_Remesh
+from .operator import QREMESH_OT_Remesh
 from .props import QWPropertyGroup, QRPropertyGroup
-from .ui import QUADWILD_PT_UIPanel, QUADWILD_PT_UIAdvancedPanel, QUADWILD_PT_UICallbackPanel
+from .ui import QREMESH_PT_UIPanel, QREMESH_PT_UIAdvancedPanel, QREMESH_PT_UICallbackPanel
 
 
 classes = [
     QWPropertyGroup,
     QRPropertyGroup,
-    QUADWILD_PT_UIPanel,
-    QUADWILD_PT_UIAdvancedPanel,
-    QUADWILD_PT_UICallbackPanel,
-    QUADWILD_OT_Remesh,
+    QREMESH_PT_UIPanel,
+    QREMESH_PT_UIAdvancedPanel,
+    QREMESH_PT_UICallbackPanel,
+    QREMESH_OT_Remesh,
 ]
 
 
