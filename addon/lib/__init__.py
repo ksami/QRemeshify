@@ -137,8 +137,8 @@ class Quadwild():
         params.repeatLosingConstraintsAlign = repeatLosingConstraintsAlign
         params.hardParityConstraint = hardParityConstraint
 
-        params.flow_config_filename = flow_config_files[flowConfig].encode()
-        params.satsuma_config_filename = satsuma_config_files[satsumaConfig].encode()
+        params.flow_config_filename = path.join(path.dirname(path.abspath(__file__)), flow_config_files[flowConfig]).encode()
+        params.satsuma_config_filename = path.join(path.dirname(path.abspath(__file__)), satsuma_config_files[satsumaConfig]).encode()
 
         params.callbackTimeLimit = (c_float * len(callbackTimeLimit))(*callbackTimeLimit)
         params.callbackGapLimit = (c_float * len(callbackGapLimit))(*callbackGapLimit)
