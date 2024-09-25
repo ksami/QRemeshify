@@ -57,4 +57,5 @@ def export_mesh(bm: bmesh.types.BMesh, mesh_filepath: str) -> None:
         f.write('\n'.join(vert_normals))
         f.write('\n')
         f.write('\n'.join(faces))
+        f.write('\n')
         f.close()
