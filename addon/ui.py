@@ -42,6 +42,7 @@ class QREMESH_PT_UIPanel(BasePanel, Panel):
 
         layout.separator()
 
+        layout.label(icon="ERROR", text="Please save first, remesh may be slow")
         layout.operator(QREMESH_OT_Remesh.bl_idname, icon="MESH_GRID")
 
 
