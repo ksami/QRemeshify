@@ -1,5 +1,5 @@
 # QRemeshify
-{ [Download](https://ksami.gumroad.com/l/nhooq) | [Forums](https://github.com/ksami/QRemeshify/discussions) | [Issues](https://github.com/ksami/QRemeshify/issues) }
+{ [Download](https://ksami.gumroad.com/l/QRemeshify) | [Forums](https://github.com/ksami/QRemeshify/discussions) | [Issues](https://github.com/ksami/QRemeshify/issues) }
 
 A Blender extension for an easy-to-use remesher that outputs good-quality quad topology
 
@@ -13,13 +13,13 @@ Based on [QuadWild with Bi-MDF solver](https://github.com/cgg-bern/quadwild-bimd
 - No external programs to download or run
 
 # Example
->[Suzanne 3D Model](/example/suzanne-quadwild-bimdf.stl)
+[Suzanne 3D Model](/example/suzanne-quadwild-bimdf.stl)  
 [![Suzanne Before/After](/images/suzanne-resized.png)](/images/suzanne.png)
 
-> Model from Elizaveta
+Model from Elizaveta  
 [![Women's outfit by Elizaveta](/images/outfit-resized.png)](/images/outfit.png)
 
-> Model from Wildreamz
+Model from Wildreamz  
 [![Cute cat by Wildreamz](/images/cat-resized.png)](/images/cat.png)
 
 ## Try it
@@ -34,7 +34,7 @@ Based on [QuadWild with Bi-MDF solver](https://github.com/cgg-bern/quadwild-bimd
 - Windows (still testing Linux and macOS)
 
 # Installation
-1. Download the zip file according to your OS from [Gumroad](https://ksami.gumroad.com/l/nhooq) or from [Releases](https://github.com/ksami/QRemeshify/releases)
+1. Download the zip file according to your OS from [Gumroad](https://ksami.gumroad.com/l/QRemeshify) or from [Releases](https://github.com/ksami/QRemeshify/releases)
 2. For Blender 4.2 and above, go to *Edit > Preferences > Addons* and click the arrow pointing down on the top right
 3. Click on *Install from Disk...* and select the downloaded zip file
 4. Ensure the checkbox is ticked to enable QRemeshify
