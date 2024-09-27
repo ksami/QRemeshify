@@ -1,6 +1,12 @@
 .venv
 .vscode
 blender_vscode_development
+blender_dev
 __pycache__
 *.pyc
-example
+*.blend*
+run.bat
+*.zip
+*.dll
+*.dylib
+*.so
