@@ -1,21 +1,22 @@
 import bmesh
-import math
 
 
 def export_sharp_features(bm: bmesh.types.BMesh, sharp_filepath: str, sharp_angle: float=35) -> int:
     """Export edges marked sharp, boundary, and seams as sharp features as OBJ format"""
 
     sharp_edges = []
+    bm.edges.index_update()
     bm.edges.ensure_lookup_table()
-    for edge in bm.edges:
-        angle_rad = edge.calc_face_angle(0)
-        if math.degrees(angle_rad) > sharp_angle:
-            edge.smooth = False
 
-        if not edge.smooth or edge.is_boundary or edge.seam:
+    for edge in bm.edges:
+        if not edge.smooth:
             convexity = 1 if edge.is_convex else 0
-            face_index = edge.link_faces[0].index
-            edge_index = edge.index
+            face = edge.link_faces[0]
+            face_index = face.index
+            for ei, e in enumerate(face.edges):
+                if e.index == edge.index:
+                    edge_index = ei
+                    break
             sharp_edges.append(f"{convexity},{face_index},{edge_index}")
 
     num_sharp_features = len(sharp_edges)

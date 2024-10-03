@@ -4,11 +4,10 @@ class Parameters(Structure):
     _fields_ = [
         ('remesh', c_bool),
         ('sharpAngle', c_float),
+        ('alpha', c_float),  # Unused
+        ('scaleFact', c_float),  #Unused
         ('hasFeature', c_bool),
         ('hasField', c_bool),
-        # Unused
-        ('alpha', c_float),
-        ('scaleFact', c_float),
     ]
 
 
