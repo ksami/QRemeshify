@@ -3,7 +3,7 @@ schema_version = "1.0.0"
 # Example of manifest file for a Blender extension
 # Change the values according to your extension
 id = "qremeshify"
-version = "1.0.0"
+version = "1.0.1"
 name = "QRemeshify"
 tagline = "Remesher with good-quality quad topology"
 maintainer = "ksami"
