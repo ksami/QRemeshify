@@ -34,8 +34,8 @@ class QREMESH_OT_Remesh(bpy.types.Operator):
             self.report({'ERROR_INVALID_INPUT'}, "Mesh has 0 faces")
             return {'CANCELLED'}
 
-        mesh_name = os.path.join(bpy.app.tempdir, obj.name)
-        mesh_filepath = f"{mesh_name}.obj"
+        mesh_filename = "".join(c if c not in "\/:*?<>|" else "_" for c in obj.name).strip()
+        mesh_filepath = f"{os.path.join(bpy.app.tempdir, mesh_filename)}.obj"
         self.report({'DEBUG'}, f"Remeshing from {mesh_filepath}")
 
         # Load lib
