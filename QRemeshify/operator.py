@@ -1,8 +1,10 @@
-import bmesh
-import bpy
-import math
-import mathutils
 import os
+import math
+
+import bpy
+import bmesh
+import mathutils
+
 from .lib import Quadwild, QWException
 from .util import bisect, exporter, importer
 
@@ -35,6 +37,8 @@ class QREMESH_OT_Remesh(bpy.types.Operator):
             self.report({'ERROR_INVALID_INPUT'}, "Mesh has 0 faces")
             return {'CANCELLED'}
 
+        original_location = obj.location
+        
         mesh_filename = "".join(c if c not in "\/:*?<>|" else "_" for c in obj.name).strip()
         mesh_filepath = f"{os.path.join(bpy.app.tempdir, mesh_filename)}.obj"
         self.report({'DEBUG'}, f"Remeshing from {mesh_filepath}")
@@ -142,6 +146,9 @@ class QREMESH_OT_Remesh(bpy.types.Operator):
             bpy.context.collection.objects.link(final_obj)
             bpy.context.view_layer.objects.active = final_obj
             final_obj.select_set(True)
+
+            # Set object location
+            final_obj.location = original_location
 
             # Add Mirror modifier for symmetry
             if props.symmetryX or props.symmetryY or props.symmetryZ:
