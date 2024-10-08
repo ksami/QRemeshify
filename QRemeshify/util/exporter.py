@@ -9,6 +9,8 @@ def export_sharp_features(bm: bmesh.types.BMesh, sharp_filepath: str, sharp_angl
     bm.edges.ensure_lookup_table()
 
     for edge in bm.edges:
+        if edge.is_wire:
+            continue
         if not edge.smooth:
             convexity = 1 if edge.is_convex else 0
             face = edge.link_faces[0]

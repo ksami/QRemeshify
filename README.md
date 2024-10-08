@@ -8,7 +8,7 @@ Based on [QuadWild with Bi-MDF solver](https://github.com/cgg-bern/quadwild-bimd
 # Features
 - Good-quality quad topology even with basic usage
 - Supports symmetry
-- Guide edge flow with edges marked seams/sharp
+- Guide edge flow with edges marked seams/sharp/material boundary/face set boundary
 - Options for advanced fine-tuning available
 - No external programs to download or run
 

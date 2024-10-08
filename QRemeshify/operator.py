@@ -38,7 +38,7 @@ class QREMESH_OT_Remesh(bpy.types.Operator):
             return {'CANCELLED'}
 
         original_location = obj.location
-        
+
         mesh_filename = "".join(c if c not in "\/:*?<>|" else "_" for c in obj.name).strip()
         mesh_filepath = f"{os.path.join(bpy.app.tempdir, mesh_filename)}.obj"
         self.report({'DEBUG'}, f"Remeshing from {mesh_filepath}")
@@ -71,10 +71,18 @@ class QREMESH_OT_Remesh(bpy.types.Operator):
 
                 # Find edges to mark as sharp
                 if props.enableSharp:
+                    face_set_data_layer = bm.faces.layers.int.get('.sculpt_face_set')
                     bm.edges.ensure_lookup_table()
                     for edge in bm.edges:
-                        angle_rad = edge.calc_face_angle(0)
-                        if math.degrees(angle_rad) > props.sharpAngle or edge.is_boundary or edge.seam:
+                        is_sharp = math.degrees(edge.calc_face_angle(0)) > props.sharpAngle
+                        is_material_boundary = len(edge.link_faces) > 1 and edge.link_faces[0].material_index != edge.link_faces[1].material_index
+                        is_face_set_boundary = (
+                            face_set_data_layer is not None and
+                            len(edge.link_faces) > 1 and
+                            edge.link_faces[0][face_set_data_layer] != edge.link_faces[1][face_set_data_layer]
+                        )
+
+                        if is_sharp or edge.is_boundary or edge.seam or is_material_boundary or is_face_set_boundary:
                             edge.smooth = False
 
                 # Triangulate mesh
