@@ -1,3 +1,14 @@
+bl_info = {
+    "name": "QRemeshify",
+    "description": "Remesher with good-quality quad topology",
+    "author": "ksami",
+    "version": (1, 1, 0),
+    "blender": (4, 2, 0),
+    "location": "View3D",
+    "category": "Mesh",
+}
+
+
 import bpy
 from .operator import QREMESH_OT_Remesh
 from .props import QWPropertyGroup, QRPropertyGroup
