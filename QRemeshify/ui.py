@@ -15,6 +15,7 @@ class QREMESH_PT_UIPanel(BasePanel, Panel):
 
     def draw(self, ctx: Context):
         props = ctx.scene.quadwild_props
+        qr_props = ctx.scene.quadpatches_props
 
         layout = self.layout
         layout.use_property_split = True
@@ -39,6 +40,11 @@ class QREMESH_PT_UIPanel(BasePanel, Panel):
         row.prop(props, "symmetryX", expand=True, toggle=1)
         row.prop(props, "symmetryY", expand=True, toggle=1)
         row.prop(props, "symmetryZ", expand=True, toggle=1)
+
+        layout.separator(factor=0.1)
+
+        row = layout.row()
+        row.prop(qr_props, "scaleFact", text="Density")
 
         layout.separator()
 
@@ -106,7 +112,6 @@ class QREMESH_PT_UIAdvancedPanel(BasePanel, Panel):
 
         row = layout.row()
         col = row.column()
-        col.prop(qr_props, "scaleFact")
         col.prop(qr_props, "fixedChartClusters")
         col.prop(qr_props, "timeLimit")
         col.prop(qr_props, "gapLimit")

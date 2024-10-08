@@ -18,8 +18,9 @@ class QRPropertyGroup(PropertyGroup):
 
     scaleFact: FloatProperty(
         name="Scale Factor",
-        description="Smaller for smaller quads",
+        description="Values > 1 for larger quads, < 1 to preserve more detail",
         min=0.01,
+        max=10,
         default=1,
         subtype="FACTOR"
     )
