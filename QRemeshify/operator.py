@@ -46,8 +46,10 @@ class QREMESH_OT_Remesh(bpy.types.Operator):
         # Load lib
         qw = Quadwild(mesh_filepath)
 
+        hasCache = props.useCache and os.path.exists(qw.traced_path)
+
         try:
-            if not props.useCache:
+            if not hasCache:
                 # Get mesh after modifiers and shapekeys applied
                 depsgraph = bpy.context.evaluated_depsgraph_get()
                 evaluated_obj = obj.evaluated_get(depsgraph)
@@ -178,7 +180,7 @@ class QREMESH_OT_Remesh(bpy.types.Operator):
             # Cleanup
             del qw
 
-            if not props.useCache:
+            if not hasCache:
                 bm.free()
                 del bm
                 evaluated_obj.to_mesh_clear()
